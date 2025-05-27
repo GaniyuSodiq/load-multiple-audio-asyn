@@ -1,0 +1,1 @@
+const startCtxBtn = document.querySelector(".start")
