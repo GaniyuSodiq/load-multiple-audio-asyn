@@ -29,29 +29,6 @@ startCtxBtn.addEventListener("click", () => {
 // NOW WE CAN PLAY THE AUDIO
 // BUT WE NEED A WAY TO FIRE THE AUDIO FROM HERE -so we set up an eventlistener button click
 
-setupSamplesBtn.addEventListener("click", () => {
-    setupSamples(samplePaths).then((response) => {
-        samples = response;
-        console.log(samples)
-        playSampleBtn.addEventListener("click", () => {
-            const playing = playSample(samples[count], 0, 0.1)
-            console.log(playing)
-            // setTimeout(()=>{
-            //     playing.stop()
-            // }, 3000)
-        })
-    })
-})
-
-// PLAY NEXT SOUND
-playNextBtn.addEventListener("click", () => {
-    const playing = playSample(samples[count], 0, 0.0)
-    count++
-    playSample(samples[count], 0, 0.7)
-    console.log(playing)
-})
-
-
 
 // IN ORDER TO PLAY ANYTHING, WE NEED THE AUDIO FILE(S)
 // YOU CAN LOAD FILES INDIVIDUALLY OR HAVE AN ARRAY OF FILES
@@ -131,3 +108,25 @@ function playSample(audioBuffer, time, volume) {
     sampleSource.start(time);
     return sampleSource
 }
+
+setupSamplesBtn.addEventListener("click", () => {
+    setupSamples(samplePaths).then((response) => {
+        samples = response;
+        console.log(samples)
+        playSampleBtn.addEventListener("click", () => {
+            const playing = playSample(samples[count], 0, 0.1)
+            console.log(playing)
+            // setTimeout(()=>{
+            //     playing.stop()
+            // }, 3000)
+        })
+    })
+})
+
+// PLAY NEXT SOUND
+playNextBtn.addEventListener("click", () => {
+    const playing = playSample(samples[count], 0, 0.0)
+    count++
+    playSample(samples[count], 0, 0.7)
+    console.log(playing)
+})
