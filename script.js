@@ -21,9 +21,21 @@ startCtxBtn.addEventListener("click", ()=>{
 // the we turn the response into an array buffer - this requires sm await time too
 // then we make an audio buffer from the array buffer - this allows us to play the audio
 // lastly, we return the audioBuffer
-async function getFiles(filePath){
+async function getFile(filePath){
    const response = await fetch(filePath);
    const arrayBuffer = await response.arrayBuffer();
    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
    return audioBuffer;
+}
+
+async function setupSample(paths) {
+    console.log("setting up sample");
+    const audioBuffers = [];
+
+    for (const path of paths) {
+        const sample = await getFile(path);
+        audioBuffers.push(sample);
+    }
+    console.log("setting up done");
+    return audioBuffers;
 }
