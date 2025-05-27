@@ -34,7 +34,7 @@ setupSamplesBtn.addEventListener("click", () => {
         samples = response;
         console.log(samples)
         playSampleBtn.addEventListener("click", () => {
-            const playing = playSample(samples[count], 0)
+            const playing = playSample(samples[count], 0, 0.1)
             console.log(playing)
             // setTimeout(()=>{
             //     playing.stop()
@@ -46,7 +46,7 @@ setupSamplesBtn.addEventListener("click", () => {
 // PLAY NEXT SOUND
 playNextBtn.addEventListener("click", () => {
     count++
-    const playing = playSample(samples[count], 0)
+    const playing = playSample(samples[count], 0, 0.1)
     console.log(playing)
 })
 
@@ -103,10 +103,20 @@ async function setupSamples(paths) {
 // we return the sample source because we want more control of the audio
 // we want to manipulate more like pause, play etc
 
-function playSample(audioBuffer, time) {
+// function playSample(audioBuffer, time) {
+//     const sampleSource = audioContext.createBufferSource();
+//     sampleSource.buffer = audioBuffer;
+//     sampleSource.connect(audioContext.destination);  
+//     sampleSource.start(time);
+//     return sampleSource
+// }
+
+function playSample(audioBuffer, time, volume) {
     const sampleSource = audioContext.createBufferSource();
     sampleSource.buffer = audioBuffer;
-    sampleSource.connect(audioContext.destination);
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = volume;
+    sampleSource.connect(gainNode).connect(audioContext.destination);  
     sampleSource.start(time);
     return sampleSource
 }
