@@ -30,8 +30,13 @@ startCtxBtn.addEventListener("click", () => {
 setupSamplesBtn.addEventListener("click", ()=>{
     setupSamples(samplePaths).then((response) => {
         samples = response;
+        console.log(samples)
         playSampleBtn.addEventListener("click", () => {
-            console.log(samples)
+            const playing = playSample(samples[2], 0)
+            console.log(playing)
+            setTimeout(()=>{
+                playing.stop()
+            }, 3000)
         })
     })
 })
@@ -40,7 +45,7 @@ setupSamplesBtn.addEventListener("click", ()=>{
 // IN ORDER TO PLAY ANYTHING, WE NEED THE AUDIO FILE(S)
 // YOU CAN LOAD FILES INDIVIDUALLY OR HAVE AN ARRAY OF FILES
 //
-// IN THIS TUTORIAL, WE WILL USE BUILT IN FETCH API TO GET OUR FILES - USE D API ONA FUNCTION
+// IN THIS TUTORIAL, WE WILL USE BUILT IN FETCH API TO GET OUR FILES - USE D API ON A FUNCTION
 
 // bcs fetch() api might take sm time we need to (a)wait for it - 
 // but await doesnt come on its own, 
@@ -49,11 +54,13 @@ setupSamplesBtn.addEventListener("click", ()=>{
 // the we turn the response into an array buffer - this requires sm await time too
 // then we make an audio buffer from the array buffer - this allows us to play the audio
 // lastly, we return the audioBuffer
-async function getFile(filePath) {
-    const response = await fetch(filePath);
-    const arrayBuffer = await response.arrayBuffer();
-    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-    return audioBuffer;
+// https://web.dev/articles/webaudio-intro - for more understanding 
+
+async function getFile(filePath) { // the actual audio file path
+    const response = await fetch(filePath); // fetch download the file gradually bt js cant wait dos async is used - the response is coded 0s and 1s (binary)
+    const arrayBuffer = await response.arrayBuffer(); // turn into arrayBuffer
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer); //decoded  
+    return audioBuffer; // we are getting the decoded array buffer of each audio ie buffered audio from our server/where the file is located
 }
 
 
@@ -62,7 +69,7 @@ async function getFile(filePath) {
 // The setupSample function loops through the samplePaths array
 // - picks each element of the array
 // - run it through the getFile array which return the audio (audiobuffer)
-// - stores each audiobuffere into audioBuffers array
+// - stores each audio (audiobuffere) into audioBuffers array
 // - and return the audiobuffers array
 
 async function setupSamples(paths) {
@@ -70,7 +77,7 @@ async function setupSamples(paths) {
     const audioBuffers = [];
 
     for (const path of paths) {
-        const sample = await getFile(path);
+        const sample = await getFile(path); // bcs the getfile is async func, we need to await wherever it is used n await reside in asyn func
         audioBuffers.push(sample);
     }
     console.log("setting up done");
@@ -82,12 +89,14 @@ async function setupSamples(paths) {
 
 // audioBuffer is simply an audio from the audioBuffers array
 // we need to have a source for the audio - 
-// the source can have diferent nodes too - b4 we connect it to the destinatio
-//
+// the source can have diferent nodes too - b4 we connect it to the destination
+// we return the sample source because we want more control of the audio
+// we want to manipulate more like pause, play etc
 
 function playSample(audioBuffer, time){
     const sampleSource = audioContext.createBufferSource();
     sampleSource.buffer = audioBuffer;
     sampleSource.connect(audioContext.destination);
     sampleSource.start(time);
+    return sampleSource
 }
