@@ -1,9 +1,11 @@
 let audioContext;
 let samples;
+let count = 0;
 
 const startCtxBtn = document.querySelector(".start")
 const setupSamplesBtn = document.querySelector(".setup-samples")
 const playSampleBtn = document.querySelector(".play-sample")
+const playNextBtn = document.querySelector(".play-next")
 
 // GETTING THE AUDIOCONTEXT AFTER THE USER INTERACTION - SO NO MORE SUPRISES FROM THE BROWSER
 
@@ -27,19 +29,27 @@ startCtxBtn.addEventListener("click", () => {
 // NOW WE CAN PLAY THE AUDIO
 // BUT WE NEED A WAY TO FIRE THE AUDIO FROM HERE -so we set up an eventlistener button click
 
-setupSamplesBtn.addEventListener("click", ()=>{
+setupSamplesBtn.addEventListener("click", () => {
     setupSamples(samplePaths).then((response) => {
         samples = response;
         console.log(samples)
         playSampleBtn.addEventListener("click", () => {
-            const playing = playSample(samples[2], 0)
+            const playing = playSample(samples[count], 0)
             console.log(playing)
-            setTimeout(()=>{
-                playing.stop()
-            }, 3000)
+            // setTimeout(()=>{
+            //     playing.stop()
+            // }, 3000)
         })
     })
 })
+
+// PLAY NEXT SOUND
+playNextBtn.addEventListener("click", () => {
+    count++
+    const playing = playSample(samples[count], 0)
+    console.log(playing)
+})
+
 
 
 // IN ORDER TO PLAY ANYTHING, WE NEED THE AUDIO FILE(S)
@@ -93,7 +103,7 @@ async function setupSamples(paths) {
 // we return the sample source because we want more control of the audio
 // we want to manipulate more like pause, play etc
 
-function playSample(audioBuffer, time){
+function playSample(audioBuffer, time) {
     const sampleSource = audioContext.createBufferSource();
     sampleSource.buffer = audioBuffer;
     sampleSource.connect(audioContext.destination);
