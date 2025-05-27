@@ -1,15 +1,41 @@
 let audioContext;
+let samples;
 
 const startCtxBtn = document.querySelector(".start")
+const setupSamplesBtn = document.querySelector(".setup-samples")
+const playSampleBtn = document.querySelector(".play-sample")
 
 // GETTING THE AUDIOCONTEXT AFTER THE USER INTERACTION - SO NO MORE SUPRISES FROM THE BROWSER
+
+const samplePaths = ["audios/now-paint-orange.mp3", "audios/now-paint-purple.mp3", "audios/this-is-white.mp3", "audios/this-is-yellow.mp3"]
 
 startCtxBtn.addEventListener("click", () => {
     audioContext = new AudioContext()
     console.log("Audio Context started")
 })
 
-const samplePaths = ["audios/now-paint-orange.mp3", "audios/now-paint-purple.mp3", "audios/this-is-white.mp3", "audios/this-is-yellow.mp3"]
+
+// BCS THE SETUPSAMPLES IS ASYNC FUNC, IT IS GOING TO RETURN A PROMISE 
+// SO WE NEED TO USE .then
+// THE PROMISE WILL CONTAIN A RESPONSE 
+// THIS RESPONSE IS THE OUTCOME OF THE SETUPSAMPLES ASYNC FUNCTION - 
+// in this case audioBuffers[]
+// AND WHEN WE GET THE RESPONSE, WE WANT TO RUN A FUNCTION
+// AND BCS WE WANT A GLOBAL ACCESS TO THIS RESPONSE -audioBuffers
+// WE ARE GOING TO SET IT TO A VARIABLE WE DECLARED GLOBALLY- let samples
+// the samples will comtain all the audio buffers
+// NOW WE CAN PLAY THE AUDIO
+// BUT WE NEED A WAY TO FIRE THE AUDIO FROM HERE -so we set up an eventlistener button click
+
+setupSamplesBtn.addEventListener("click", ()=>{
+    setupSamples(samplePaths).then((response) => {
+        samples = response;
+        playSampleBtn.addEventListener("click", () => {
+            console.log(samples)
+        })
+    })
+})
+
 
 // IN ORDER TO PLAY ANYTHING, WE NEED THE AUDIO FILE(S)
 // YOU CAN LOAD FILES INDIVIDUALLY OR HAVE AN ARRAY OF FILES
@@ -39,7 +65,7 @@ async function getFile(filePath) {
 // - stores each audiobuffere into audioBuffers array
 // - and return the audiobuffers array
 
-async function setupSample(paths) {
+async function setupSamples(paths) {
     console.log("setting up sample");
     const audioBuffers = [];
 
@@ -49,4 +75,19 @@ async function setupSample(paths) {
     }
     console.log("setting up done");
     return audioBuffers;
+}
+
+
+//  WE NEED A WAY TO PLAY THE SAMPLE
+
+// audioBuffer is simply an audio from the audioBuffers array
+// we need to have a source for the audio - 
+// the source can have diferent nodes too - b4 we connect it to the destinatio
+//
+
+function playSample(audioBuffer, time){
+    const sampleSource = audioContext.createBufferSource();
+    sampleSource.buffer = audioBuffer;
+    sampleSource.connect(audioContext.destination);
+    sampleSource.start(time);
 }
