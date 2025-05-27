@@ -45,8 +45,9 @@ setupSamplesBtn.addEventListener("click", () => {
 
 // PLAY NEXT SOUND
 playNextBtn.addEventListener("click", () => {
+    const playing = playSample(samples[count], 0, 0.0)
     count++
-    const playing = playSample(samples[count], 0, 0.1)
+    playSample(samples[count], 0, 0.7)
     console.log(playing)
 })
 
@@ -107,6 +108,16 @@ async function setupSamples(paths) {
 //     const sampleSource = audioContext.createBufferSource();
 //     sampleSource.buffer = audioBuffer;
 //     sampleSource.connect(audioContext.destination);  
+//     sampleSource.start(time);
+//     return sampleSource
+// }
+
+// function playSample(audioBuffer, time, volume) {
+//     const sampleSource = audioContext.createBufferSource();
+//     sampleSource.buffer = audioBuffer;
+//     const gainNode = audioContext.createGain();
+//     gainNode.gain.value = volume;
+//     sampleSource.connect(gainNode).connect(audioContext.destination);  
 //     sampleSource.start(time);
 //     return sampleSource
 // }
