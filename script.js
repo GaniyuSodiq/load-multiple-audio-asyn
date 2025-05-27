@@ -30,6 +30,15 @@ async function getFile(filePath) {
     return audioBuffer;
 }
 
+
+// The synchronization process
+
+// The setupSample function loops through the samplePaths array
+// - picks each element of the array
+// - run it through the getFile array which return the audio (audiobuffer)
+// - stores each audiobuffere into audioBuffers array
+// - and return the audiobuffers array
+
 async function setupSample(paths) {
     console.log("setting up sample");
     const audioBuffers = [];
