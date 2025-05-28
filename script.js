@@ -99,6 +99,8 @@ async function setupSamples(paths) {
 //     return sampleSource
 // }
 
+// I NEED TO OPEN UP THIS FUNCTION SO I CAN 
+
 function playSample(audioBuffer, time, volume) {
     const sampleSource = audioContext.createBufferSource();
     sampleSource.buffer = audioBuffer;
